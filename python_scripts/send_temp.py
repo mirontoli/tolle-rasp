@@ -13,7 +13,7 @@ import time
 __author__ = "Anatoly Mironov @mirontoli, David Stenzelius "
 
 sense = SenseHat()
-
+msg = "Temperature {0:.2f} C. Greetings from *monkey-bot*".format(sense.temp)
 while True:
     os.system('curl -X POST --data-urlencode \'payload={"text": "Temperature %s greetings from *monkey-bot*.", "channel": "#random", "username": "monkey-bot", "icon_emoji": ":monkey_face:"}\' https://hooks.slack.com/services/<token>' % sense.temp)
     time.sleep(20)
