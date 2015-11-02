@@ -10,8 +10,11 @@
  how to set up environment and get auth2 key from google:
  http://gspread.readthedocs.org/en/latest/oauth2.html
  https://github.com/JeremyMorgan/Raspberry_Pi_Weather_Station/blob/master/google.py
- you have to run worksheet.resize(1) the first time:
-
+ you have to give permissions to edit worksheet to the email defined as client_email in the auth settings
+ you have to run worksheet.resize(0) the first time
+ Be careful with the locale. On my Raspberry Pi I have en-UK locale and on Google Drive I have sv-SE, that cause a problem
+ data parsing (decimal point and comma, wrong date and so on)
+ Adjust the locale on the worksheet so that it corresponds your locale on the Raspberry Pi
 """
 
 import time
