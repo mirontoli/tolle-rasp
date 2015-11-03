@@ -34,5 +34,6 @@ while True:
   pressure = "{0:.2f}".format(sense.pressure)
   entry = {'PartitionKey': partition_key, 'RowKey': iso_date, 'Temperature': temp, 'Humidity':humidity, 'Pressure':pressure}
   table_service.insert_entity(table_name, entry)
+  time.sleep(2)
   sense.clear()
-  time.sleep(60) # wait one minute
+  time.sleep(58) # wait one minute
