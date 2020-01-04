@@ -15,9 +15,7 @@ def log(temp, pressure):
 
 def display_temp():
     raw_temp = sense.temp
-    #calculate temperature https://www.raspberrypi.org/forums/viewtopic.php?t=111457&p=769672
-    calctemp = 0.0071 * raw_temp * raw_temp + 0.86 * raw_temp - 10.0
-    temp = round(calctemp)
+    temp = round(raw_temp)
     print(f'Temp: {temp}')
     sense.show_message(f'{temp}', text_colour=[0, 255, 0], scroll_speed=0.2)
     raw_pressure = sense.get_pressure()
@@ -31,9 +29,6 @@ def display_temp():
     temp_press = sense.get_temperature_from_pressure()
     print('Temp from Humidity, Default Temp, Temp from Pressure')
     print(f'{round(temp_hum)}, {round(sense.temp)}, {round(temp_press)}')
-
-
-    
 
 while True:
     display_temp()
