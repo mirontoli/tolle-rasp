@@ -3,10 +3,7 @@
 """
  shows a creeper on sense when shaken, inspired from geek gurl diaries youtube channel
 """
-
 __author__ = "Anatoly Mironov @mirontoli"
-
-
 
 from sense_hat import SenseHat
 import time
