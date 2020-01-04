@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
- shows a creeper on sense hat when shaken
+ shows a creeper on sense when shaken
 """
 
 __author__ = "Anatoly Mironov @mirontoli"
