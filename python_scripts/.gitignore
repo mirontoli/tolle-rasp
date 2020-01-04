@@ -2,3 +2,6 @@ Climate Data-154d73f0cb97.json
 
 # local log file from show_temp.py
 weather.csv
+
+# avatars created in gravatar.py
+avatars/*
