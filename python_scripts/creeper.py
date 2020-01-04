@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
- shows a creeper on sense when shaken
+ shows a creeper on sense when shaken, inspired from geek gurl diaries youtube channel
 """
 
 __author__ = "Anatoly Mironov @mirontoli"
