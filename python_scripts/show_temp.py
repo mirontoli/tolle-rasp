@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+"""
+ 2020-01-04
+ displays temperature (in Celsius) and atmospheric pressure (millibar)
+ it also logs the values into weather.csv
+ __author__ = "Anatoly Mironov @mirontoli"
+"""
+
 from sense_hat import SenseHat
 import time
 from datetime import datetime
