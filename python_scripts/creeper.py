@@ -9,6 +9,7 @@ from sense_hat import SenseHat
 import time
 
 sense = SenseHat()
+sense.set_rotation(180)
 sense.clear()
 
 g = (0, 255, 0) #Green

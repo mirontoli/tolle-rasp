@@ -16,28 +16,56 @@ green = (0, 255, 0)
 log_path = 'weather.csv'
 
 
-def log(temp, pressure):     
+def show_smile():
+    w = [150, 150, 150]
+    g = [0, 255, 0]
+    r = [255, 0, 0]
+    e = [0, 0, 0]
+
+    smile = [
+        e,e,e,e,e,e,e,e,
+        e,g,g,e,e,g,g,e,
+        e,g,g,e,e,g,g,e,
+        e,e,e,e,e,e,e,e,
+        e,e,e,e,e,e,e,e,
+        g,e,e,e,e,e,e,g,
+        g,g,g,g,g,g,g,g,
+        e,e,e,e,e,e,e,e
+        ]
+    sense.set_pixels(smile)
+    time.sleep(1)
+    sense.clear()
+
+def log(temp, pressure, humidity):     
     file = open(log_path, 'a+')
     now = datetime.now()
-    file.write(f'{now};{temp};{pressure}\n')
+    file.write(f'{now};{temp};{pressure}\;{humidity}n')
 
 def display_temp():
     raw_temp = sense.temp
-    temp = round(raw_temp)
-    print(f'Temp: {temp}')
-    sense.show_message(f'{temp}', text_colour=[0, 255, 0], scroll_speed=0.2)
+    temp = round(raw_temp, 1)
+
     raw_pressure = sense.get_pressure()
-    pressure = round(raw_pressure) 
-    print(f'Pressure: {pressure}')
-    sense.show_message(f'{pressure}', text_colour=[255, 0, 0], scroll_speed=0.2)
+    pressure = round(raw_pressure, 1) 
     
-    log(temp, pressure)
+    raw_humidity = sense.get_humidity()
+    humidity = round(raw_humidity, 1)
     
     temp_hum = sense.get_temperature_from_humidity()
     temp_press = sense.get_temperature_from_pressure()
-    print('Temp from Humidity, Default Temp, Temp from Pressure')
-    print(f'{round(temp_hum)}, {round(sense.temp)}, {round(temp_press)}')
+    print('Pressure, Humidity, Temp, Temp from Humidity, Temp from Pressure')
+    print(f'{pressure} mbar, {humidity} %, {temp} °C, {round(temp_hum, 1)} °C, {round(temp_press, 1)} °C')
+    
+    show_smile()
+
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    sense.show_message(f'{now}', text_colour=[255, 192, 203], scroll_speed=.1)
+    sense.show_message(f'{temp}C', text_colour=[0, 255, 0], scroll_speed=.1)
+    sense.show_message(f'{pressure}mbar', text_colour=[255, 0, 0], scroll_speed=.1)
+    sense.show_message(f'{humidity}%', text_colour=[0, 0, 255], scroll_speed=.1)
+    
+    log(temp, pressure, humidity)
 
 while True:
     display_temp()
-    time.sleep(2)
+    time.sleep(5)
