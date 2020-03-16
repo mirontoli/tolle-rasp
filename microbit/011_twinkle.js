@@ -1,0 +1,13 @@
+let item = neopixel.create(DigitalPin.P0, 8, NeoPixelMode.RGB)
+basic.forever(function () {
+    item.showColor(neopixel.colors(NeoPixelColors.Indigo))
+    basic.pause(1000)
+    item.clear()
+    item.show()
+    basic.pause(500)
+    item.showColor(neopixel.colors(NeoPixelColors.Blue))
+    basic.pause(1000)
+    item.clear()
+    item.show()
+    basic.pause(500)
+})
