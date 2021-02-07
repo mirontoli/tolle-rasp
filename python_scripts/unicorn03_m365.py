@@ -42,13 +42,14 @@ def show_test():
   make_row(3, color_codes['FalsePositive'])
   uh.show()
 
-#make sure you login with sudo first: sudo m365 login
-result = subprocess.run(['m365', 'tenant status list', '--output', 'json'], stdout=subprocess.PIPE)
-body = result.stdout.decode('utf-8')
-data = json.loads(body)
-all_services = { x['Id']: x for x in data['value'] }
+def tenant_status():
+  #make sure you login with sudo first: sudo m365 login
+  result = subprocess.run(['m365', 'tenant status list', '--output', 'json'], stdout=subprocess.PIPE)
+  body = result.stdout.decode('utf-8')
+  data = json.loads(body)
+  return { x['Id']: x for x in data['value'] }
 
-def show():
+def show(all_services):
   for row in range(8):
     service = services[row]
     status = all_services[service]['Status']
@@ -56,5 +57,6 @@ def show():
     make_row(row, colors)
   uh.show()
 
-show()
+all_services = tenant_status()
+show(all_services)
 time.sleep(10)
