@@ -57,6 +57,10 @@ def show(all_services):
     make_row(row, colors)
   uh.show()
 
-all_services = tenant_status()
-show(all_services)
-time.sleep(10)
+while True:
+  #just for debugging, clear while loading new status
+  uh.clear()
+  uh.show()
+  all_services = tenant_status()
+  show(all_services)
+  time.sleep(5*60)
