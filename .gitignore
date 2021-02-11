@@ -58,3 +58,5 @@ target/
 
 
 *.DS_Store
+
+**/nohup.out

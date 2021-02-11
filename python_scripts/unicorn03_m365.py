@@ -1,3 +1,19 @@
+"""
+this script gets office 365 status every 5 minutes
+and shows the status on the unicorn phat
+Author @mirontoli 2021-02-11
+Blog Post: to be linked to when published
+Prerequisites
+- Raspberry Pi Zero W with Raspberry Pi OS
+- Unicorn Phat and its software
+- nodejs and npm
+- @pnp/cli-microsoft365 npm package
+- login to m365 as sudo (since sudo is required for gpio in the same script)
+- admin consent for cli-microsoft365 in the target tenant
+
+Run it by hitting
+nohup python3 unicorn03_m365.py &
+"""
 import subprocess
 import unicornhat as uh
 import time
