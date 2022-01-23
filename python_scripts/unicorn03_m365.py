@@ -12,7 +12,7 @@ Prerequisites
 - admin consent for cli-microsoft365 in the target tenant
 
 Run it by hitting
-nohup python3 unicorn03_m365.py &
+sudo nohup python3 unicorn03_m365.py &
 """
 import subprocess
 import unicornhat as uh
