@@ -2,7 +2,7 @@
 this script gets office 365 status every 5 minutes
 and shows the status on the unicorn phat
 Author @mirontoli 2021-02-11
-Blog Post: to be linked to when published
+Blog Post: https://chuvash.eu/2021/04/20/monitoring-microsoft-365-using-raspberry-pi-and-m365-cli/
 Prerequisites
 - Raspberry Pi Zero W with Raspberry Pi OS
 - Unicorn Phat and its software
@@ -33,7 +33,7 @@ services = [
   'Exchange',
   'OneDriveForBusiness',
   'yammer',
-  'Forms',
+  'Viva', # change 2022-01-23 Viva instead of Forms
   'PowerBIcom',
   'Intune'
 ]
@@ -70,7 +70,8 @@ def tenant_status():
   result = subprocess.run(['m365', 'tenant status list', '--output', 'json'], stdout=subprocess.PIPE)
   body = result.stdout.decode('utf-8')
   data = json.loads(body)
-  return { x['Id']: x for x in data['value'] }
+  # change 2022-01-23 json format data['value'] -> data
+  return { x['Id']: x for x in data }
 
 def show(all_services):
   for row in range(8):
