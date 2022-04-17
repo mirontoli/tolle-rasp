@@ -107,7 +107,7 @@ def tenant_status():
 def show(all_services):
   for row in range(8):
     service = services[row]
-    status = all_services[service]['Status']
+    status = all_services[service]['status']
     colors = color_codes[status]
     make_row(row, colors)
   uh.show()
