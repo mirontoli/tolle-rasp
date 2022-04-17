@@ -77,16 +77,16 @@ grey = [192,192,192]
 blue = [0,0,255]
 
 color_codes = {
-  'ServiceOperational': [green, green, green, green],
-  'ServiceRestored': [green, green, green, yellow],
-  'Investigating': [purple, purple, purple, purple],
-  'FalsePositive': [green, green, green, purple],
-  'InformationUnavailable': [grey, grey, grey, grey],
-  'ServiceInterruption': [red, red, red, red],
-  'ExtendedRecovery': [red, red, red, yellow],
-  'ServiceDegradation': [red, red, yellow, green],
+  'serviceOperational': [green, green, green, green],
+  'serviceRestored': [green, green, green, yellow],
+  'investigating': [purple, purple, purple, purple],
+  'falsePositive': [green, green, green, purple],
+  'informationUnavailable': [grey, grey, grey, grey],
+  'serviceInterruption': [red, red, red, red],
+  'extendedRecovery': [red, red, red, yellow],
+  'serviceDegradation': [red, red, yellow, green],
   'PIRPublished': [green, green, green, blue],
-  'RestoringService': [red, yellow, yellow, green]
+  'restoringService': [red, yellow, yellow, green]
 }
 
 def show_test():
