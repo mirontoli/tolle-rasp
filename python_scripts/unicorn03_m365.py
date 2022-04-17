@@ -102,7 +102,7 @@ def tenant_status():
   body = result.stdout.decode('utf-8')
   data = json.loads(body)
   # change 2022-01-23 json format data['value'] -> data
-  return { x['Id']: x for x in data }
+  return { x['id']: x for x in data }
 
 def show(all_services):
   for row in range(8):
