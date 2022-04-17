@@ -20,6 +20,27 @@ node v12.22.12
 npm 6.14.16
 @pnp/cli-microsoft365@5.1.0
 
+Steps from scratch:
+* Flash SD Card with Raspberry Pi OS Bullseye
+* Setup the OS, wifi, enable ssh
+* sudo apt update && sudo apt upgrade -y
+* curl -sS https://get.pimoroni.com/unicornhat | bash
+* wget https://unofficial-builds.nodejs.org/download/release/v12.22.12/node-v12.22.12-linux-armv6l.tar.xz
+* tar xvfJ node-v12.22.12-linux-armv6l.tar.xz
+* sudo cp -R node-v12.22.12-linux-armv6l/* /usr/local
+* rm -rf node-*
+* sudo reboot
+* sudo npm i -g @pnp/cli-microsoft365
+* sudo apt install git -y
+* git config --global user.name "Anatoly Mironov"
+* git config --global user.email "someone@something.com"
+* mkdir Workspace
+* cd Workspace
+* git clone https://github.com/mirontoli/tolle-rasp.git
+* cd tolle-rasp/python_scripts
+
+
+
 Run it by hitting
 sudo nohup python3 unicorn03_m365.py &
 
