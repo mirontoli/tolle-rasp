@@ -13,6 +13,14 @@ Prerequisites
 
 Run it by hitting
 sudo nohup python3 unicorn03_m365.py &
+
+When using with nvm:
+Install nvm. 
+Install nvm install v10.24.1
+Log in as sudo: sudo $NVM_DIR/versions/node/v10.24.1/bin/m365 login
+For some reason, m365 command is not present, maybe there is a better solution out there.
+
+Now it is not working since the commands have changed: m365 tenant serviceannouncement health list
 """
 import subprocess
 import unicornhat as uh
