@@ -11,6 +11,7 @@ Prerequisites
 - login to m365 as sudo (since sudo is required for gpio in the same script)
 - admin consent for m365 (PnP Management Shell) in the target tenant
 
+
 My environment:
 OS: Raspbian GNU/Linux 11 (bullseye)
 Architecture: armv61
