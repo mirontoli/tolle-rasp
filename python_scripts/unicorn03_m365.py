@@ -13,6 +13,7 @@ Prerequisites
 
 
 My environment:
+Verified work date: 2022-04-17
 OS: Raspbian GNU/Linux 11 (bullseye)
 Architecture: armv61
 python3 3.9.2
