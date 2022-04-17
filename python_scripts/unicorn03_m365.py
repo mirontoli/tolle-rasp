@@ -6,10 +6,16 @@ Blog Post: https://chuvash.eu/2021/04/20/monitoring-microsoft-365-using-raspberr
 Prerequisites
 - Raspberry Pi Zero W with Raspberry Pi OS
 - Unicorn Phat and its software
-- nodejs and npm
+- node and npm (https://hassancorrigan.com/blog/install-nodejs-on-a-raspberry-pi-zero/)
 - @pnp/cli-microsoft365 npm package
 - login to m365 as sudo (since sudo is required for gpio in the same script)
-- admin consent for cli-microsoft365 in the target tenant
+- admin consent for m365 (PnP Management Shell) in the target tenant
+
+My environment:
+python3 3.9.2
+node v12.22.12
+npm 6.14.16
+@pnp/cli-microsoft365@5.1.0
 
 Run it by hitting
 sudo nohup python3 unicorn03_m365.py &
@@ -75,7 +81,7 @@ def show_test():
 
 def tenant_status():
   #make sure you login with sudo first: sudo m365 login
-  result = subprocess.run(['m365', 'tenant status list', '--output', 'json'], stdout=subprocess.PIPE)
+  result = subprocess.run(['m365', 'tenant serviceannouncement health list', '--output', 'json'], stdout=subprocess.PIPE)
   body = result.stdout.decode('utf-8')
   data = json.loads(body)
   # change 2022-01-23 json format data['value'] -> data
