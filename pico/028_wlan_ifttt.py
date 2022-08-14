@@ -2,27 +2,29 @@
 This is for connecting to wifi and notifying through IFTTT mobile app
 For this to work, you need to set up an IFTTT applet "if webhook then push notification"
 
-There is a newer version of it with secrets.py - 028
+secrets inspired by https://github.com/pi3g/pico-w/blob/main/MicroPython/I%20Pico%20W%20LED%20web%20server/main.py
 '''
-import json
+import time
+from secrets import secrets
 import network
+import urequests
 
-# save config.json on raspberry pi pico
-# {"ssid":"Network","password":"Password", "webhook":"https://..."}
-f = open('config.json', 'r')
-s = f.read()
-c = json.loads(s)
-ssid = c['ssid']
-password = c['password']
-webhook = c['webhook'] #ifttt webhook
+# save secrets.py on raspberry pi pico
+#secrets = {
+#    'ssid': 'your ssid',
+#    'password': 'password'
+#    'webhook': 'https://...'
+#}
 
+ssid = secrets['ssid']
+password = secrets['password']
+webhook = secrets['webhook'] #ifttt webhook
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect(ssid, password)
 print(wlan.status()) # first status 1 not connected
 
-import time
 max_wait = 10
 while max_wait > 0:
     if wlan.status() == 3:
@@ -36,7 +38,6 @@ if wlan.status() != 3:
 else:
     print('Pico is now connected to WLAN')
     
-import urequests
 r = urequests.get(webhook)
 print(r.content)
 r.close()
