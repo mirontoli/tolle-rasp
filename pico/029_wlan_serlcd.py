@@ -86,7 +86,7 @@ html = """<!DOCTYPE html>
         <p>Say something to the SerLCD</p>
         <form>
             <input type="text" id="msg">
-            <input type="button" onclick="window.open('?msg='+document.getElementById('msg').value+'&endof=msg')" value="Say">
+            <input type="button" onclick="window.open('?msg='+document.getElementById('msg').value+'&endof=msg','_self')" value="Say">
         </form>
     </body>
 </html>
@@ -108,7 +108,8 @@ def listen():
         hasMsg = msgPos > -1 and endPos > -1
         if hasMsg:
             print("some message there is")
-            msg = r[(msgPos+5):endPos]
+            startPos = msgPos+5
+            msg = r[startPos:endPos]
             # TODO need better unquote
             msg_unquoted = msg.replace('%20', ' ')
             print(f'Message: {msg_unquoted}')
