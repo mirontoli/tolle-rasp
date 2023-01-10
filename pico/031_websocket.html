@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Client</title>
+</head>
+<body>
+<div class="container">
+
+    <button onlick="moveForward()">F</button><br>
+    <button onlick="moveBackward()">B</button><br>
+</div>
+
+<script>
+    var ws = new WebSocket("ws://" + "192.168.3.46" + ":81");
+    async function moveForward() {
+        ws.send("f")
+    }
+    async function moveBackward() {
+        ws.send("b")
+    }
+    ws.onmessage = function (evt) {
+        console.log(evt)
+    };
+</script>
+</body>
+</html>
