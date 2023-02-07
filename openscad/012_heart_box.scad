@@ -109,6 +109,13 @@ module heart_box_simple(r=10,h=10) {
                heart_simple(r=r);
      }
  }
- heart_box_simple();
+ module heart_box_lid_simple(r=10,h=3) {
+     heart_simple(r=r);
+     translate([0,0,1])
+        scale([0,0,0.9])
+            heart_simple(r=r);
+ }
+ //heart_box_simple();
+ heart_box_lid_simple();
  
  
