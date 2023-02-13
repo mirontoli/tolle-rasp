@@ -90,32 +90,36 @@ module heart_simple(r=5, h=10) {
 //margins = height - scaled_height;
 //translate_y = margins/2;
 function translate_y(side,scaling) = (sqrt(2*side*side)-sqrt(2*side*side)*scaling)/2;
- 
+
+scaling_inner = 0.90;
+scaling_outer = 0.95;
+h=30;
+r = 30;
+side = r*2;
+translated_y_inner = translate_y(side, scaling_inner);
+translated_y_outer = translate_y(side, scaling_outer);
+
 module heart_box_simple(r=10,h=10) {
-    side = r*2;
-    scaling_inner = 0.8;
-    scaling_outer = 0.9;
-    translated_y_inner = translate_y(side, scaling_inner);
-    translated_y_outer = translate_y(side, scaling_outer);
+    echo("h", h);
     z_outer = h-1;
-    echo("y outer", translated_y_outer);
+    echo("z_outer", z_outer);
     difference() {
-       heart_simple(r=r);
+       heart_simple(r=r, h=h);
        translate([0,translated_y_inner,2])
            scale([scaling_inner,scaling_inner,1])
-               heart_simple(r=r);
+               heart_simple(r=r,h=h);
        translate([0,translated_y_outer,z_outer])
            scale([scaling_outer,scaling_outer,1])
-               heart_simple(r=r);
+               heart_simple(r=r, h=h);
      }
  }
  module heart_box_lid_simple(r=10,h=3) {
-     heart_simple(r=r);
-     translate([0,0,1])
-        scale([0,0,0.9])
-            heart_simple(r=r);
+     heart_simple(r=r,h=h);
+     translate([0,translated_y_outer,1])
+        scale([0.9,0.9,1])
+            heart_simple(r=r,h=h);
  }
- //heart_box_simple();
- heart_box_lid_simple();
+ //heart_box_simple(r=r,h=h);
+ heart_box_lid_simple(r=r);
  
  
