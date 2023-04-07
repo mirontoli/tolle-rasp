@@ -40,10 +40,28 @@ module create_handle(size) {
 }
 module create_slider(offset) {
     base = 20;
-    slider(l=length, h=rail_size,base=base, wall=4, slop=offset);
+    hole_inset=20;
+    difference() {
+        translate([width/2+(rail_size+base),0,-rail_size/2])
+            rotate([0,-90,0])
+                slider(l=length, h=rail_size,base=base, wall=4, slop=offset);
+        translate([width/2+(rail_size+(base/2)),(length/2)-hole_inset, -rail_size/2])
+            create_3mm_screw_hole();
+        translate([width/2+(rail_size+(base/2)),-((length/2)-hole_inset), -rail_size/2])
+            create_3mm_screw_hole();
+    }
 }
-// create_tray();
-// create_rail();
-// mirror([1,0,0]) create_rail();
-// create_handle(10);
-create_slider(0.4);
+module create_3mm_screw_hole() {
+    union() {
+        cylinder(d=3, h=500);
+        translate([0,0,-500])
+            cylinder(d=10,h=500);
+    }
+}
+create_tray();
+create_rail();
+mirror([1,0,0]) create_rail();
+create_handle(10);
+// create_slider(0.4);
+// mirror([1,0,0]) create_slider(0.4);
+// create_3mm_screw_hole();
