@@ -5,15 +5,17 @@
 // saved in ~\Documents\OpenSCAD\libraries
 use <BOSL/shapes.scad>;
 $fn = 200;
-width = 190;
-length = 190;
-height = 70;
+width = 180;
+length = 67;
+height = 40;
 rail_size = 10;
-hollow_factor = 0.95;
+hollow_factor_width = 0.95;
+hollow_factor_length = 0.85;
+hollow_factor_height = 0.90;
 module create_tray() {
     difference() {
         cuboid([width,length,height], fillet=10);
-        scale([hollow_factor,hollow_factor, hollow_factor])
+        scale([hollow_factor_width,hollow_factor_length, hollow_factor_height])
             cuboid([width,length,height],fillet=10);
         translate([0,0,height])
             cube([width*2,length*2,height*2], center=true);
@@ -38,6 +40,13 @@ module create_handle(size) {
                 cube([size*100, size*100,size*100], center=true);    
         }
 }
+module create_3mm_screw_hole() {
+    union() {
+        cylinder(d=3, h=500);
+        translate([0,0,-500])
+            cylinder(d=10,h=500);
+    }
+}
 module create_slider(offset) {
     base = 20;
     hole_inset=20;
@@ -51,17 +60,10 @@ module create_slider(offset) {
             create_3mm_screw_hole();
     }
 }
-module create_3mm_screw_hole() {
-    union() {
-        cylinder(d=3, h=500);
-        translate([0,0,-500])
-            cylinder(d=10,h=500);
-    }
-}
 create_tray();
 create_rail();
 mirror([1,0,0]) create_rail();
-create_handle(10);
-// create_slider(0.4);
+// create_handle(10);
+create_slider(0.4);
 // mirror([1,0,0]) create_slider(0.4);
 // create_3mm_screw_hole();
