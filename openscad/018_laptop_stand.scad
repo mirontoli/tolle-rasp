@@ -1,4 +1,5 @@
 // downloaded round-anything lib from https://github.com/Irev-Dev/Round-Anything
+// simplifying 3d print, page 212
 
 use <Round-Anything/roundAnythingExamples.scad>;
 $fn=200;

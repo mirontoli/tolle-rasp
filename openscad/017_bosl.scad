@@ -60,10 +60,14 @@ module create_slider(offset) {
             create_3mm_screw_hole();
     }
 }
+
+// 5% infill, support, build plate adhesion none.
 create_tray();
 create_rail();
 mirror([1,0,0]) create_rail();
 // create_handle(10);
-create_slider(0.4);
+
+// slider x2, 5% infill, no support, rotate in slicer, approx 1 hr to print
+// create_slider(0.4);
+
 // mirror([1,0,0]) create_slider(0.4);
-// create_3mm_screw_hole();
