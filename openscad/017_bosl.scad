@@ -3,6 +3,8 @@
 // chapter 6, page 143
 // BOSL downloaded from https://github.com/revarbat/BOSL
 // saved in ~\Documents\OpenSCAD\libraries
+// published on thingiverse: https://www.thingiverse.com/thing:5988391
+
 use <BOSL/shapes.scad>;
 $fn = 200;
 width = 180;
@@ -68,6 +70,7 @@ mirror([1,0,0]) create_rail();
 // create_handle(10);
 
 // slider x2, 5% infill, no support, rotate in slicer, approx 1 hr to print
-// create_slider(0.4);
+// rotate([0,90,0]) 
+    create_slider(0.4);
 
-// mirror([1,0,0]) create_slider(0.4);
+mirror([1,0,0]) create_slider(0.4);
