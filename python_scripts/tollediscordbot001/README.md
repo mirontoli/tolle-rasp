@@ -23,6 +23,8 @@ python -m venv tdb001-venv
 pip install -r requirements.txt
 ```
 
+(If required, you might need to install venv: `sudo apt install python3-venv -y`).
+
 In Visual Studio Code the virtual environment will be loaded automatically, so just press F5.
 
 If in terminal, activate the virtual environment
@@ -34,3 +36,10 @@ If in terminal, activate the virtual environment
 ```bash
 source tdb001-venv\bin\activate
 ```
+
+To start the bot from terminal run:
+
+```bash
+python bot.py
+```
+
