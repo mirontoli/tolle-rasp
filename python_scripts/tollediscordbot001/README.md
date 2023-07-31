@@ -2,6 +2,8 @@
 
 It just responds to messages and lists members. It is just my first test.
 
+![discord bot in a guild channel](media/image.png)
+
 ## Discord Bot Setup
 
 Create a new app and a bot in Discord Developer Portal, set up permissions and intents. Get a token.
