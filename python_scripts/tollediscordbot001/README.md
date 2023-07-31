@@ -43,3 +43,8 @@ To start the bot from terminal run:
 python bot.py
 ```
 
+If you want to start it from SSH and log out, run the following:
+
+```bash
+nohup python bot.py &
+```
