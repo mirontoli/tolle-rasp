@@ -51,14 +51,16 @@ async def on_message(message):
     print(f'message.content: {message.content}')
     if message.content.lower() == "hej":
         response = 'Hej på dig, du 👋👋!\nDu kan testa att skriva "visdom", "mat" eller "joke"'
-    if message.content.lower() == 'visdom':
+    elif message.content.lower() == 'visdom':
         response = random.choice(words_of_wisdom)
-    if message.content.lower() == 'joke':
+    elif message.content.lower() == 'joke':
         #response = "You'll soon hear a joke"
         response = fetch_random_joke()
-    if message.content.lower() == 'mat':
+    elif message.content.lower() == 'mat':
         dish = random.choice(dishes)
         response = f'{dish}\nGlöm inte att äta grönsaker'
+    elif message.content.lower().startswith('gpt '):
+        response = 'Soon you will be able to talk to chatgpt too'
 
     await message.channel.send(response)
 
