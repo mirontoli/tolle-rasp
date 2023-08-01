@@ -8,10 +8,11 @@ It just responds to messages and lists members. It is just my first test.
 
 Create a new app and a bot in Discord Developer Portal, set up permissions and intents. Get a token.
 
-Create a `.env` file and paste your token there:
+Create a `.env` file and paste your tokens here:
 
 ```
 DISCORD_TOKEN=<YOUR-TOKEN>
+OPENAI_API_KEY=<YOUR_KEY>
 ```
 
 ## Installation and requirements
