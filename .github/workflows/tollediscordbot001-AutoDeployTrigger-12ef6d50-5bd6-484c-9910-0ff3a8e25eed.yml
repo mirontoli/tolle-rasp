@@ -1,0 +1,42 @@
+name: Trigger auto deployment for tollediscordbot001
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ master ]
+    paths:
+    - 'python_scripts/tollediscordbot001/**'
+    - '.github/workflows/tollediscordbot001-AutoDeployTrigger-12ef6d50-5bd6-484c-9910-0ff3a8e25eed.yml'
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.TOLLEDISCORDBOT001_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}/python_scripts/tollediscordbot001 
+          registryUrl: ca685f3b9d51acr.azurecr.io
+          registryUsername: ${{ secrets.TOLLEDISCORDBOT001_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.TOLLEDISCORDBOT001_REGISTRY_PASSWORD }}
+          containerAppName: tollediscordbot001
+          resourceGroup: try-container-apps_2023-08-02
+          imageToBuild: ca685f3b9d51acr.azurecr.io/tollediscordbot001:${{ github.sha }}
+          dockerfilePath: Dockerfile
+
+     
+
