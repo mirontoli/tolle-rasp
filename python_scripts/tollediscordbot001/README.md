@@ -37,6 +37,7 @@ If in terminal, activate the virtual environment
 ```bash
 source tdb001-venv\bin\activate
 ```
+## Running the bot locally
 
 To start the bot from terminal run:
 
@@ -49,3 +50,11 @@ If you want to start it from SSH and log out, run the following:
 ```bash
 nohup python bot.py &
 ```
+
+## Running the bot in a Docker container
+
+```bash
+docker build -t tollediscordbot001 .
+docker run -d --name tollebot001 tollediscordbot001:latest
+```
+
