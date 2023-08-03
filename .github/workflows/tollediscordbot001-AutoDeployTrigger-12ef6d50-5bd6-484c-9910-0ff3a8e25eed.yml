@@ -37,7 +37,7 @@ jobs:
           resourceGroup: try-container-apps_2023-08-02
           imageToBuild: ca685f3b9d51acr.azurecr.io/tollediscordbot001:${{ github.sha }}
           dockerfilePath: Dockerfile
-          environmentVariables: DISCORD_TOKEN=secretref:${{ secrets.TOLLEDISCORDBOT001_DISCORD_TOKEN }} OPENAI_API_KEY=secretref:${{ secrets.TOLLEDISCORDBOT001_OPENAI_API_KEY }}
+          environmentVariables: DISCORD_TOKEN=secretref:discord-token OPENAI_API_KEY=secretref:open-api-key
 
      
 
