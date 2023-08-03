@@ -25,7 +25,21 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.TOLLEDISCORDBOT001_AZURE_CREDENTIALS }}
-
+      
+      - name: Configure Replicas and Secrets
+        uses: Azure/cli@v1.07
+        with:
+          inlineScript: |
+            az containerapp update \
+              --name tollediscordbot001 \
+              --resource-group try-container-apps_2023-08-02 \
+              --min-replicas 1 \
+              --max-replicas 1
+            az containerapp secret set \
+              --name tollediscordbot001 \
+              --resource-group try-container-apps_2023-08-02 \
+              --secrets discord-token=${{ secrets.TOLLEDISCORDBOT001_DISCORD_TOKEN }} openai-api-key=${{ secrets.TOLLEDISCORDBOT001_OPENAI_API_KEY }}
+      
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v1
         with:
