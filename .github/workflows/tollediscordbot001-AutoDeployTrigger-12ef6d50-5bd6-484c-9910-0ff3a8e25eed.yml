@@ -27,7 +27,7 @@ jobs:
           creds: ${{ secrets.TOLLEDISCORDBOT001_AZURE_CREDENTIALS }}
       
       - name: Configure Replicas and Secrets
-        uses: Azure/cli@v1.07
+        uses: Azure/cli@v1.0.7
         with:
           inlineScript: |
             az containerapp update \
