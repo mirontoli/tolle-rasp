@@ -2,9 +2,10 @@
 
 The bot responds to messages:
 
-* On "Hej" it greets and tells what you can do with it
-* On "Visdom" it presents a word of wisdom
-* On "Mat" it suggests a dish
+* On "Hej" (hi in Swedish) it greets and tells what you can do with it
+* On "Visdom" (wisdom in Swedish) it presents a word of wisdom
+* On "Mat" (food in Swedish) it suggests a dish
+* On "Joke" it fetches a random joke from [icanhasdadjoke](https://icanhazdadjoke.com/)
 * On "GPT <question>" it fetches an answer from ChatGPT (3.5)
 
 ![discord bot in a guild channel](media/image.png)
@@ -78,6 +79,6 @@ docker compose up -d --build
 
 ## Deploying to Azure
 
-I suggest you to follow you this guide to prepare you Azure environment and Github repo and set up a container app and a workflow in Github Actions.
+I suggest you to follow this guide to prepare you Azure environment and Github repo and set up a container app and a workflow in Github Actions:
 
 * [Quickstart: Build and deploy your container app from a repository in Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/quickstart-code-to-cloud?tabs=bash%2Ccsharp&pivots=github-build#prepare-the-github-repository)
