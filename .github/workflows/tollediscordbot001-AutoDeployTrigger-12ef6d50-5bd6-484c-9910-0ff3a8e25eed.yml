@@ -7,11 +7,10 @@ on:
     branches: 
       [ master ]
     paths:
-    - 'python_scripts/tollediscordbot001/**'
+    - 'python_scripts/tollediscordbot001/bot.py'
+    - 'python_scripts/tollediscordbot001/wisdom.txt'
+    - 'python_scripts/tollediscordbot001/food.txt'
     - '.github/workflows/tollediscordbot001-AutoDeployTrigger-12ef6d50-5bd6-484c-9910-0ff3a8e25eed.yml'
-    paths-ignore:
-    - 'python_scripts/tollediscordbot001/README.md'
-    - 'python_scripts/tollediscordbot001/media/**'
 
   # Allow mannually trigger 
   workflow_dispatch:
