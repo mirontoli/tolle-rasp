@@ -20,13 +20,10 @@ client = discord.Client(intents=intents)
 
 #openai
 openai.api_type = 'azure'
-openai.api_base = 'https://smart-gpt.openai.azure.com/'
+openai.api_base = os.getenv('OPENAI_API_BASE')
 openai.api_version = '2023-03-15-preview'
 openai.api_key = os.getenv('OPENAI_API_KEY')
-messages = [{"role":"system","content":"Du är en robot som finns å servern mirongamers p discord. Du heter tollebot001. Du ska anpassa språket till barn. örklara saker enkelt, dra gärna äförelser fån vardagliga livet"}]
-
-#tmp
-#messages.append({"role":"user","content":"finns det liv påmars?"})
+messages = [{"role":"system","content":"Du är en robot som finns på servern mirongamers på discord. Du heter tollebot001. Du ska anpassa språket till barn. Förklara saker enkelt, dra gärna jämförelser fån vardagliga livet"}]
 
 def ask_gpt(user_prompt):
     if len(user_prompt) < 5:
@@ -45,9 +42,6 @@ def ask_gpt(user_prompt):
     answer = response.choices[0].message.content
     messages.append({"role":"assistant","content":answer})
     return answer
-
-#print('openai response:')
-#print(response)
 
 
 #jokes
@@ -100,6 +94,5 @@ async def on_message(message):
 
     await message.channel.send(response)
 
-        
 
 client.run(TOKEN)
