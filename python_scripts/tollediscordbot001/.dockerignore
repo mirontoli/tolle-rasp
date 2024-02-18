@@ -1,0 +1,10 @@
+README.md
+docker-compose.yml
+Dockerfile
+.gitignore
+.env
+.dockerignore
+media
+nohup.out
+tdb001-venv
+
