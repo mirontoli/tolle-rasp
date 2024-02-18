@@ -55,6 +55,8 @@ def index():
                 <input type="submit" value="Connect">
             </form>
             <br>
+            <a href="/status">status page</a>
+            <br>
             <a href="/shutdown">want to shut down</a>
         </body>
         </html>
@@ -78,6 +80,22 @@ def submit():
         elif result.stdout:
             return "Success: <i>%s</i>" % result.stdout.decode()
         return "Error: failed to connect."
+
+@app.route('/status')
+def status():
+    connected = ''
+    connected_command = ['iwgetid','-r']
+    result = subprocess.run(connected_command, capture_output=True)
+    if result.stderr:
+        connected = result.stderr.decode()
+    elif result.stdout:
+        ssid = result.stdout.decode()
+        connected = f'Connected to: {ssid}'
+    body = f'''
+        <h1>status</h1>
+        <p>{connected}</p>
+    '''
+    return body
 
 # safe shutdown from the web browser
 # todo add reboot
