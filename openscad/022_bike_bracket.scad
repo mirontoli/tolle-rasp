@@ -8,6 +8,8 @@ bolt_hole_diameter = 6;
 slot_width = 7;
 slot_length = 20;
 bolt_hole_radius = bolt_hole_diameter/2;
+//Vertical flat bracket
+vertical_bracket_height = height/2;
 
 
 // bottom bracket
@@ -19,8 +21,8 @@ module bottom_bracket() {
 module hole() {
     union() {
         cylinder(h=height+2, r=bolt_hole_radius, $fn=32);
-        //inbuktning for mutters
-        cylinder(h=2, r=bolt_hole_radius+2, $fn=32);
+        //inbuktning for nuts
+        cylinder(h=3, r=bolt_hole_radius+3, $fn=32);
     }
 }
 
@@ -43,8 +45,7 @@ module bottom_bracket_w_holes() {
 }
 
 
-//Vertical flat bracket
-vertical_bracket_height = height/2;
+
 module bracket() {
     cube([length, width, vertical_bracket_height]);
 }
