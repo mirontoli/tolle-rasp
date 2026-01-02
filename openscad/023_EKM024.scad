@@ -14,9 +14,13 @@ pcb_thickness = 2;
 
 outer = [inner_length + 2*wall, inner_width + 2*wall, inner_height + wall - 1];
 // USB-C opening on one short side
-usb_width = 7; // opening width in mm
+usb_width = 9; // opening width in mm
 usb_y = outer[1]/2 - usb_width/2; // centered along the short axis
-cutout = [wall+2, usb_width, inner_height+1];
+cutout_usb = [wall+2, usb_width, inner_height+1];
+
+screw_header_width = 6;
+screw_header_y = outer[1]/2 - screw_header_width/2;
+cutout_screw = [wall+2, screw_header_width, inner_height+1];
 
 corner_radius = 0.5; // adjust; must be < min(outer)/2
 
@@ -51,8 +55,8 @@ difference() {
     // cut a rectangular opening on one short side (front at y=0)
     // depth: reach through outer wall into inner cavity but not across entire width
     translate([-1, usb_y, wall + pcb_thickness])   
-        cube(cutout, center = false);
+        cube(cutout_usb, center = false);
     // cut out a rectangular opening on the opposite short side for output cables
-    translate([outer[0]- wall- 1, usb_y, wall + pcb_thickness])
-        cube(cutout, center = false);
+    translate([outer[0]- wall- 1, screw_header_y, wall + pcb_thickness])
+        cube(cutout_screw, center = false);
 }
