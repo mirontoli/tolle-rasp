@@ -1,7 +1,8 @@
 /*
-    Box without top
+    Box enclosure for EKM-024 USB-C lock module
     Inside: length 28 mm, width 20 mm, height 10 mm
     Wall thickness: 2 mm
+    @mirontoli 2026-01-02
 */
 
 inner_length = 28;
@@ -12,7 +13,7 @@ wall = 2;
 pcb_thickness = 2;
 
 
-outer = [inner_length + 2*wall, inner_width + 2*wall, inner_height + wall - 1];
+outer = [inner_length + 2*wall, inner_width + 2*wall, inner_height + wall -1];
 // USB-C opening on one short side
 usb_width = 9; // opening width in mm
 usb_y = outer[1]/2 - usb_width/2; // centered along the short axis
@@ -43,6 +44,12 @@ module hull_box(size, r=0.5, fn=24) {
     }
 }
 
+// the rail to connect the lock
+module rail() {
+    rotate([45,0,0])
+        cube([outer[0]+2, 2, 2], center = false);
+}
+
 difference() {
     // outer shell
     //cube(outer, center = false);
@@ -59,4 +66,14 @@ difference() {
     // cut out a rectangular opening on the opposite short side for output cables
     translate([outer[0]- wall- 1, screw_header_y, wall + pcb_thickness])
         cube(cutout_screw, center = false);
+    // cut out the rail slot on top
+    translate([-1, 0, outer[2]-4])
+        rail();
+    // cut out the rail slot on top
+    translate([-1, outer[1], outer[2]-4])
+        rail();
 }
+
+
+
+
