@@ -50,11 +50,11 @@ module rail() {
         cube([outer[0]+2, 1, 1], center = false);
 }
 
-difference() {
+!difference() {
     // outer shell
     cube(outer, center = false);
     //rounded_box(outer, r = corner_radius);
-    hull_box(outer, r = corner_radius);
+    //hull_box(outer, r = corner_radius);
     // inner cavity (translated up by wall thickness to create bottom)
     translate([wall, wall, wall])
         cube(inner, center = false);
@@ -67,17 +67,17 @@ difference() {
     translate([outer[0]- wall- 1, screw_header_y, wall + pcb_thickness])
         cube(cutout_screw, center = false);
     // cut out the rail slot on top
-    translate([-1, -0.5, outer[2]-2])
+    translate([-1, 0, outer[2]-2])
         rail();
     // cut out the rail slot on top
-    translate([-1, outer[1]+0.5, outer[2]-2])
+    translate([-1, outer[1]+0, outer[2]-2])
         rail();
 }
 // Lid
 lid_outer_height = wall + 2;
 lid_outer = [outer[0], outer[1]+2*wall, lid_outer_height];
 lid_inner = [inner_length + 2*wall + 2, outer[1], lid_outer_height];
-!difference() {
+difference() {
     cube(lid_outer, center = false);
     translate([-1, wall, wall])
         cube(lid_inner, center = false);
