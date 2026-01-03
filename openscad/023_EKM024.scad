@@ -45,12 +45,12 @@ module hull_box(size, r=0.5, fn=24) {
 }
 
 // the rail to connect the lock
-module rail() {
+module rail(length = outer[0]+2) {
     rotate([45,0,0])
-        cube([outer[0]+2, 1, 1], center = false);
+        cube([length, 1, 1], center = false);
 }
 
-!difference() {
+difference() {
     // outer shell
     cube(outer, center = false);
     //rounded_box(outer, r = corner_radius);
@@ -74,14 +74,24 @@ module rail() {
         rail();
 }
 // Lid
-lid_outer_height = wall + 2;
+lid_outer_height = wall + 3;
 lid_outer = [outer[0], outer[1]+2*wall, lid_outer_height];
 lid_inner = [inner_length + 2*wall + 2, outer[1], lid_outer_height];
-difference() {
-    cube(lid_outer, center = false);
-    translate([-1, wall, wall])
-        cube(lid_inner, center = false);
+!union() {
+    difference() {
+        // outer lid
+        cube(lid_outer, center = false);
+        // inner cavity of lid
+        translate([-1, wall, wall])
+            cube(lid_inner, center = false);
+    }
+    // rails on lid
+    translate([0, wall, lid_outer_height -2])
+        rail(length = lid_outer[0]);
+    translate([0, lid_outer[1] - wall, lid_outer_height -2])
+        rail(length = lid_outer[0]);
 }
+
 
 
 
