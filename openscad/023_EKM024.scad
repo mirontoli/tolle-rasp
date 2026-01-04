@@ -11,6 +11,7 @@ inner_height = 8;
 inner = [inner_length, inner_width, inner_height];
 wall = 2;
 pcb_thickness = 2;
+tollerance = 0.05;
 
 
 outer = [inner_length + 2*wall, inner_width + 2*wall, inner_height + wall -1];
@@ -96,9 +97,9 @@ label_y = lid_outer[1]/2 - label_size/2;
                 text(label, size=label_size, halign="left", valign="baseline"); 
     }
     // rails on lid
-    translate([0, wall, 0])
+    translate([0, wall - tollerance, 1])
         rail(length = lid_outer[0]);
-    translate([0, lid_outer[1] - wall, 0])
+    translate([0, lid_outer[1] - wall + tollerance, 1])
         rail(length = lid_outer[0]);
 }
 
