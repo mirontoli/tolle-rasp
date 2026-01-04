@@ -77,20 +77,40 @@ difference() {
 lid_outer_height = wall + 3;
 lid_outer = [outer[0], outer[1]+2*wall, lid_outer_height];
 lid_inner = [inner_length + 2*wall + 2, outer[1], lid_outer_height];
+label = "5V 3A";
+label_size = 5;
+label_len = len(label);
+echo("Label length: ", label_len);
+label_x = 7; //lid_outer[0]/2 - label_len/2;
+label_y = lid_outer[1]/2 - label_size/2;
+
 !union() {
     difference() {
         // outer lid
         cube(lid_outer, center = false);
         // inner cavity of lid
-        translate([-1, wall, wall])
+        translate([-1, wall, -wall])
             cube(lid_inner, center = false);
+        translate([label_x, label_y, lid_outer_height - 0.8])
+            linear_extrude(height=1)
+                text(label, size=label_size, halign="left", valign="baseline"); 
     }
     // rails on lid
-    translate([0, wall, lid_outer_height -2])
+    translate([0, wall, 0])
         rail(length = lid_outer[0]);
-    translate([0, lid_outer[1] - wall, lid_outer_height -2])
+    translate([0, lid_outer[1] - wall, 0])
         rail(length = lid_outer[0]);
 }
+
+
+
+difference() {
+    cube(lid_outer, center = false);
+    translate([label_x, label_y, lid_outer_height - 0.8])
+        linear_extrude(height=1)
+            text(label, size=label_size, halign="left", valign="baseline");
+}
+
 
 
 
