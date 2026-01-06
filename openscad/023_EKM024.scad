@@ -8,7 +8,7 @@
 inner_length = 28;
 inner_width  = 20;
 inner_height = 8;
-callibration_compensation = 0.1; // adjust if needed
+callibration_compensation = 0.4; // adjust if needed
 cal_comp_half = callibration_compensation / 2;
 inner = [inner_length + callibration_compensation, 
         inner_width + callibration_compensation, 
@@ -36,7 +36,7 @@ module rail(length = outer[0]+2) {
     rotate([45,0,0])
         cube([length, 1, 1], center = false);
 }
-
+// the part with ! (exclamation mark) is the part that is going to be visible/printable
 !difference() {
     // outer shell
     cube(outer, center = false);
@@ -68,23 +68,27 @@ echo("Label length: ", label_len);
 label_x = 7; //lid_outer[0]/2 - label_len/2;
 label_y = lid_outer[1]/2 - label_size/2;
 
-union() {
-    difference() {
-        // outer lid
-        cube(lid_outer, center = false);
-        // inner cavity of lid
-        translate([-1, wall, -wall])
-            cube(lid_inner, center = false);
-        translate([label_x, label_y, lid_outer_height - 0.8])
-            linear_extrude(height=1)
-                text(label, size=label_size, halign="left", valign="baseline"); 
+// the lid
+// put an ! before rotate to make it printable
+// lay down for easier printing
+rotate([90,0,0])
+    union() {
+        difference() {
+            // outer lid
+            cube(lid_outer, center = false);
+            // inner cavity of lid
+            translate([-1, wall, -wall])
+                cube(lid_inner, center = false);
+            translate([label_x, label_y, lid_outer_height - 0.8])
+                linear_extrude(height=1)
+                    text(label, size=label_size, halign="left", valign="baseline"); 
+        }
+        // rails on lid
+        translate([0, wall - tollerance, lid_outer_height - wall - rail_depth])
+            rail(length = lid_outer[0]);
+        translate([0, lid_outer[1] - wall + tollerance, lid_outer_height - wall - rail_depth])
+            rail(length = lid_outer[0]);
     }
-    // rails on lid
-    translate([0, wall - tollerance, lid_outer_height - wall - rail_depth])
-        rail(length = lid_outer[0]);
-    translate([0, lid_outer[1] - wall + tollerance, lid_outer_height - wall - rail_depth])
-        rail(length = lid_outer[0]);
-}
 
 
 
