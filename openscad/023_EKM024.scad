@@ -7,7 +7,7 @@
 
 inner_length = 28;
 inner_width  = 20;
-inner_height = 8;
+inner_height = 6;
 callibration_compensation = 0.4; // adjust if needed
 cal_comp_half = callibration_compensation / 2;
 inner = [inner_length + callibration_compensation, 
@@ -25,7 +25,7 @@ cutout_usb = [wall+2, usb_width + callibration_compensation, inner_height+1];
 usb_y = outer[1]/2 - cutout_usb[1]/2; // centered along the short axis
 
 
-screw_header_width = 6;
+screw_header_width = 4;
 screw_header_y = outer[1]/2 - screw_header_width/2;
 cutout_screw = [wall+2, screw_header_width, inner_height+1];
 
