@@ -1,10 +1,9 @@
 
 /*
 mounting bracket for tv set cables
-@mirontoli
-v1 2026-08-30
+@mirontoli 
+version 4 2026-09-01
 */
-
 w=160;
 d=50;
 h=3;
@@ -13,9 +12,11 @@ screw_hole_r = 2;
 screw_hole_x_pad = 30;
 screw_hole_x_pad_opposite = w - screw_hole_x_pad;
 screw_hole_d = 20;
-screw_mount_r = 4;
-screw_mount_d = screw_hole_d + screw_hole_r*1.6;
+screw_mount_r = 5;
+screw_mount_d = screw_hole_d + screw_hole_r*2.4;
 gusset_w = 15;
+w_cable = 50;
+d_cable = 25;
 
 assert(gusset_w < screw_hole_d - screw_hole_r, 
 "the screw hole position must be higher than the gusset");
@@ -62,12 +63,28 @@ module full_width_gusset() {
                     ]);
 }
 
+module cable_hole() {
+    translate([w/2-w_cable/2,-eps,-eps]) 
+        difference() {
+            cube([w_cable,d_cable+eps,d_cable+eps]);
+            rotate([0, -45, 0])
+                cube([w_cable, d_cable+2*eps, d_cable+2*eps]);
+            rotate([0, 45, 0])
+                translate([0, -eps, 36])
+                    cube([w_cable, d_cable+3*eps, d_cable+2*eps]);
+        }
+}
+
 module mounting_bracket() {
-    union() {
-        vertical_plate();
-        horizontal_plate();
-        full_width_gusset();
+    difference() {
+        union() {
+            vertical_plate();
+            horizontal_plate();
+            full_width_gusset();
+        }
+        cable_hole();
     }
 }
 
 mounting_bracket();
+
