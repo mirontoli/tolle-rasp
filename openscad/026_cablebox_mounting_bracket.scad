@@ -2,18 +2,18 @@
 /*
 mounting bracket for tv set cables
 @mirontoli 
-version 5 2026-09-01
+version 6 2026-09-02
 */
 w=160;
 d=50;
 h=5;
 eps = 0.01;
-screw_hole_r = 2;
+screw_hole_r = 2.5;
 screw_hole_x_pad = 30;
 screw_hole_x_pad_opposite = w - screw_hole_x_pad;
 screw_hole_d = 23;
 screw_mount_r = 5;
-screw_mount_d = screw_hole_d + screw_hole_r*2.4;
+screw_mount_d = screw_hole_d + screw_hole_r*2.2;
 gusset_w = 18;
 w_cable = 50;
 d_cable = 25;
@@ -89,9 +89,10 @@ module mounting_bracket() {
 mounting_bracket();
 
 // test print
+/*
 !difference() {
     mounting_bracket();
     translate([w/4, -eps, -eps])
         cube([2*w,2*d,2*d]);
 }
-
+*/
