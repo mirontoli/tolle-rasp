@@ -1,0 +1,123 @@
+# Board: Raspberry Pi Pico W
+# Definition: definitions/boards/rpipicow/manifest.yaml
+# tollepicow.yaml
+# 2026-10-25
+# shows spot price, full price and current power on a 20x4 LCD connected via I2C
+
+esphome:
+  name: tollepicow
+  friendly_name: tollepicow
+  on_boot:
+    priority: -100
+    then:
+      - delay: 2s
+      - lambda: |-
+          const uint8_t clear_cmd[] = {0x7C, 0x2D};
+          id(serlcd).write(clear_cmd, sizeof(clear_cmd));
+  
+      - delay: 200ms
+  
+      - lambda: |-
+          const uint8_t message[] = "Hello World!";
+          auto result = id(serlcd).write(message, sizeof(message) - 1);
+          if (result != esphome::i2c::ERROR_OK) {
+            ESP_LOGW("serlcd", "Failed to write Hello World");
+          }
+
+rp2:
+  board: rpipicow
+
+logger:
+
+api:
+  encryption:
+    key: "...."
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: tollepicow Fallback Hotspot
+    password: "...."
+
+captive_portal:
+
+# Inbyggd LED på Pico W
+output:
+  - platform: gpio
+    pin: LED
+    id: onboard_led
+
+light:
+  - platform: binary
+    name: "Onboard LED"
+    output: onboard_led
+
+i2c:
+  sda: GPIO20
+  scl: GPIO21
+  scan: true
+  frequency: 100kHz
+
+i2c_device:
+  id: serlcd
+  address: 0x72
+
+sensor:
+  - platform: homeassistant
+    id: spot_price
+    entity_id: sensor.nord_pool_se4_current_price
+
+  - platform: homeassistant
+    id: full_price
+    entity_id: sensor.current_electricity_full_price
+
+  - platform: homeassistant
+    id: current_power
+    entity_id: sensor.tibber_pulse_gunanga_power
+
+interval:
+  - interval: 15s
+    then:
+      - lambda: |-
+          const uint8_t clear_cmd[] = {0x7C, 0x2D};
+          id(serlcd).write(clear_cmd, sizeof(clear_cmd));
+          delay(100);
+
+          char line[21];
+
+          // Rad 1: Spotpris
+          if (isnan(id(spot_price).state)) {
+            snprintf(line, sizeof(line), "Spot: -- kr/kWh");
+          } else {
+            snprintf(line, sizeof(line), "Spot: %.2f kr/kWh",
+                     id(spot_price).state);
+          }
+          id(serlcd).write((const uint8_t *)line, strlen(line));
+
+          // Rad 2: Fullpris
+          const uint8_t row2[] = {0xFE, 0xC0};
+          id(serlcd).write(row2, sizeof(row2));
+
+          if (isnan(id(full_price).state)) {
+            snprintf(line, sizeof(line), "Fullpris: -- kr/kWh");
+          } else {
+            snprintf(line, sizeof(line), "Fullpris: %.2f kr/kWh",
+                     id(full_price).state);
+          }
+          id(serlcd).write((const uint8_t *)line, strlen(line));
+
+          // Rad 3: Effekt
+          const uint8_t row3[] = {0xFE, 0x94};
+          id(serlcd).write(row3, sizeof(row3));
+
+          if (isnan(id(current_power).state)) {
+            snprintf(line, sizeof(line), "Effekt: -- kW");
+          } else {
+            snprintf(line, sizeof(line), "Effekt: %.2f kW",
+                     id(current_power).state / 1000.0f);
+          }
+          id(serlcd).write((const uint8_t *)line, strlen(line));
