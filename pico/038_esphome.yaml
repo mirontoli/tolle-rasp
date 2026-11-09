@@ -12,17 +12,34 @@ esphome:
     then:
       - delay: 2s
       - lambda: |-
+          // Clear display once at startup
           const uint8_t clear_cmd[] = {0x7C, 0x2D};
           id(serlcd).write(clear_cmd, sizeof(clear_cmd));
-  
-      - delay: 200ms
-  
-      - lambda: |-
-          const uint8_t message[] = "Hello World!";
-          auto result = id(serlcd).write(message, sizeof(message) - 1);
-          if (result != esphome::i2c::ERROR_OK) {
-            ESP_LOGW("serlcd", "Failed to write Hello World");
-          }
+          delay(100);
+
+          // Write static labels once
+          auto label = [&](uint8_t pos, const char *text) {
+            const uint8_t cursor[] = {0xFE, pos};
+            id(serlcd).write(cursor, sizeof(cursor));
+            id(serlcd).write(
+              (const uint8_t *) text, strlen(text));
+          };
+
+          // Row 1
+          label(0x80, "F:");
+          label(0x89, "E:");
+
+          // Row 2
+          label(0xC0, "D:");
+          label(0xC9, "M:");
+
+          // Row 4
+          label(0xD4, "V:");
+          label(0xDD, "W:");
+
+          // Force first refresh of all values
+          id(display_initialized) = true;
+          id(refresh_display).execute();
 
 rp2:
   board: rpipicow
@@ -31,8 +48,7 @@ logger:
 
 api:
   encryption:
-    key: "...."
-
+    key: !secret tollepicow__encryption_key
 ota:
   - platform: esphome
 
@@ -41,8 +57,7 @@ wifi:
   password: !secret wifi_password
   ap:
     ssid: tollepicow Fallback Hotspot
-    password: "...."
-
+    password: !secret tollepicow__ap_password
 captive_portal:
 
 # Inbyggd LED på Pico W
@@ -66,58 +81,87 @@ i2c_device:
   id: serlcd
   address: 0x72
 
+# Home Assistant sensors
 sensor:
   - platform: homeassistant
-    id: spot_price
-    entity_id: sensor.nord_pool_se4_current_price
-
-  - platform: homeassistant
     id: full_price
-    entity_id: sensor.current_electricity_full_price
-
+    entity_id: sensor.tibber_pulse_gunanga_electricity_price
   - platform: homeassistant
     id: current_power
     entity_id: sensor.tibber_pulse_gunanga_power
+  - platform: homeassistant
+    id: electricity_today
+    entity_id: sensor.electricity_variable_cost_today
+  - platform: homeassistant
+    id: electricity_month
+    entity_id: sensor.electricity_variable_cost_this_month
+  - platform: homeassistant
+    id: water_today
+    entity_id: sensor.water_variable_cost_today
+  - platform: homeassistant
+    id: water_month
+    entity_id: sensor.water_variable_cost_this_month
 
-interval:
-  - interval: 15s
+globals:
+  - id: display_initialized
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+
+# Update only fields that have changed
+script:
+  - id: refresh_display
+    mode: restart
     then:
       - lambda: |-
-          const uint8_t clear_cmd[] = {0x7C, 0x2D};
-          id(serlcd).write(clear_cmd, sizeof(clear_cmd));
-          delay(100);
+          if (!id(display_initialized)) return;
 
-          char line[21];
+          // Each field remembers its last displayed text.
+          static char previous[6][9] = {{0}};
 
-          // Rad 1: Spotpris
-          if (isnan(id(spot_price).state)) {
-            snprintf(line, sizeof(line), "Spot: -- kr/kWh");
-          } else {
-            snprintf(line, sizeof(line), "Spot: %.2f kr/kWh",
-                     id(spot_price).state);
-          }
-          id(serlcd).write((const uint8_t *)line, strlen(line));
+          auto update = [&](int index, uint8_t position,
+                            float value, int width, int decimals,
+                            float multiplier = 1.0f) {
+            char text[16];
 
-          // Rad 2: Fullpris
-          const uint8_t row2[] = {0xFE, 0xC0};
-          id(serlcd).write(row2, sizeof(row2));
+            if (!std::isfinite(value)) {
+              snprintf(text, sizeof(text), "%*s", width, "--");
+            } else {
+              float scaled = value * multiplier;
+              snprintf(text, sizeof(text), "%0*.*f",
+                       width, decimals, scaled);
+            }
 
-          if (isnan(id(full_price).state)) {
-            snprintf(line, sizeof(line), "Fullpris: -- kr/kWh");
-          } else {
-            snprintf(line, sizeof(line), "Fullpris: %.2f kr/kWh",
-                     id(full_price).state);
-          }
-          id(serlcd).write((const uint8_t *)line, strlen(line));
+            // Prevent overflowing into the next field.
+            if (strlen(text) != (size_t) width) {
+              memset(text, '-', width);
+              text[width] = '\0';
+            }
 
-          // Rad 3: Effekt
-          const uint8_t row3[] = {0xFE, 0x94};
-          id(serlcd).write(row3, sizeof(row3));
+            if (strcmp(previous[index], text) == 0) return;
 
-          if (isnan(id(current_power).state)) {
-            snprintf(line, sizeof(line), "Effekt: -- kW");
-          } else {
-            snprintf(line, sizeof(line), "Effekt: %.2f kW",
-                     id(current_power).state / 1000.0f);
-          }
-          id(serlcd).write((const uint8_t *)line, strlen(line));
+            const uint8_t cursor[] = {0xFE, position};
+            id(serlcd).write(cursor, sizeof(cursor));
+            id(serlcd).write(
+              (const uint8_t *) text, strlen(text));
+
+            strcpy(previous[index], text);
+          };
+
+          // Row 1: full price and power (W)
+          update(0, 0x82, id(full_price).state, 5, 2);
+          update(1, 0x8B, id(current_power).state, 4, 0);
+
+          // Row 2: electricity costs
+          update(2, 0xC2, id(electricity_today).state, 6, 2);
+          update(3, 0xCB, id(electricity_month).state, 7, 2);
+
+          // Row 4: water costs
+          update(4, 0xD6, id(water_today).state, 6, 2);
+          update(5, 0xDF, id(water_month).state, 7, 2);
+
+# Refresh regularly, but write only changed values
+interval:
+  - interval: 5s
+    then:
+      - script.execute: refresh_display
