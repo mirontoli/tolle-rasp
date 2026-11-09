@@ -1,45 +1,11 @@
-# Board: Raspberry Pi Pico W
-# Definition: definitions/boards/rpipicow/manifest.yaml
-# tollepicow.yaml
-# 2026-10-25
-# shows spot price, full price and current power on a 20x4 LCD connected via I2C
+# Raspberry Pi Pico W + SparkFun SerLCD 20x4 (I2C)
+# Home Assistant electricity and water dashboard
+# Labels: P=price, W=watts, D=today electricity, M=month electricity,
+#         V=today water, K=month water (Kamstrup)
 
 esphome:
   name: tollepicow
   friendly_name: tollepicow
-  on_boot:
-    priority: -100
-    then:
-      - delay: 2s
-      - lambda: |-
-          // Clear display once at startup
-          const uint8_t clear_cmd[] = {0x7C, 0x2D};
-          id(serlcd).write(clear_cmd, sizeof(clear_cmd));
-          delay(100);
-
-          // Write static labels once
-          auto label = [&](uint8_t pos, const char *text) {
-            const uint8_t cursor[] = {0xFE, pos};
-            id(serlcd).write(cursor, sizeof(cursor));
-            id(serlcd).write(
-              (const uint8_t *) text, strlen(text));
-          };
-
-          // Row 1
-          label(0x80, "F:");
-          label(0x89, "E:");
-
-          // Row 2
-          label(0xC0, "D:");
-          label(0xC9, "M:");
-
-          // Row 4
-          label(0xD4, "V:");
-          label(0xDD, "W:");
-
-          // Force first refresh of all values
-          id(display_initialized) = true;
-          id(refresh_display).execute();
 
 rp2:
   board: rpipicow
@@ -49,6 +15,7 @@ logger:
 api:
   encryption:
     key: !secret tollepicow__encryption_key
+
 ota:
   - platform: esphome
 
@@ -58,9 +25,9 @@ wifi:
   ap:
     ssid: tollepicow Fallback Hotspot
     password: !secret tollepicow__ap_password
+
 captive_portal:
 
-# Inbyggd LED på Pico W
 output:
   - platform: gpio
     pin: LED
@@ -81,7 +48,6 @@ i2c_device:
   id: serlcd
   address: 0x72
 
-# Home Assistant sensors
 sensor:
   - platform: homeassistant
     id: full_price
@@ -107,61 +73,92 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'false'
+  - id: previous_values
+    type: std::array<std::string, 6>
+    restore_value: no
 
-# Update only fields that have changed
 script:
+  - id: initialize_display
+    mode: single
+    then:
+      - lambda: |-
+          const uint8_t clear_cmd[] = {0x7C, 0x2D};
+          id(serlcd).write(clear_cmd, sizeof(clear_cmd));
+          delay(100);
+
+          auto label = [&](uint8_t pos, const char *text) {
+            const uint8_t cursor[] = {0xFE, pos};
+            id(serlcd).write(cursor, sizeof(cursor));
+            delay(20);
+            id(serlcd).write((const uint8_t *) text, strlen(text));
+            delay(20);
+          };
+
+          label(0x80, "P:");
+          label(0x89, "W:");
+          label(0xC0, "D:");
+          label(0xC9, "M:");
+          label(0xD4, "V:");
+          label(0xDD, "K:");
+
+          for (auto &value : id(previous_values)) {
+            value.clear();
+          }
+          id(display_initialized) = true;
+
   - id: refresh_display
     mode: restart
     then:
       - lambda: |-
           if (!id(display_initialized)) return;
 
-          // Each field remembers its last displayed text.
-          static char previous[6][9] = {{0}};
-
           auto update = [&](int index, uint8_t position,
-                            float value, int width, int decimals,
-                            float multiplier = 1.0f) {
+                            float value, int width, int decimals) {
             char text[16];
-
             if (!std::isfinite(value)) {
               snprintf(text, sizeof(text), "%*s", width, "--");
             } else {
-              float scaled = value * multiplier;
-              snprintf(text, sizeof(text), "%0*.*f",
-                       width, decimals, scaled);
+              snprintf(text, sizeof(text), "%0*.*f", width, decimals, value);
             }
 
-            // Prevent overflowing into the next field.
+            // Do not overwrite adjacent fields if a value is too wide.
             if (strlen(text) != (size_t) width) {
               memset(text, '-', width);
               text[width] = '\0';
             }
 
-            if (strcmp(previous[index], text) == 0) return;
+            if (id(previous_values)[index] == text) return;
 
             const uint8_t cursor[] = {0xFE, position};
             id(serlcd).write(cursor, sizeof(cursor));
-            id(serlcd).write(
-              (const uint8_t *) text, strlen(text));
-
-            strcpy(previous[index], text);
+            id(serlcd).write((const uint8_t *) text, strlen(text));
+            id(previous_values)[index] = text;
           };
 
-          // Row 1: full price and power (W)
+          // Row 1: full electricity price and current power.
           update(0, 0x82, id(full_price).state, 5, 2);
           update(1, 0x8B, id(current_power).state, 4, 0);
 
-          // Row 2: electricity costs
+          // Row 2: variable electricity costs.
           update(2, 0xC2, id(electricity_today).state, 6, 2);
           update(3, 0xCB, id(electricity_month).state, 7, 2);
 
-          // Row 4: water costs
+          // Row 4: variable water costs. K is rounded to whole SEK.
           update(4, 0xD6, id(water_today).state, 6, 2);
-          update(5, 0xDF, id(water_month).state, 7, 2);
+          update(5, 0xDF, id(water_month).state, 4, 0);
 
-# Refresh regularly, but write only changed values
 interval:
+  # One-time initialization after the LCD has had time to start.
+  - interval: 1s
+    then:
+      - if:
+          condition:
+            lambda: 'return !id(display_initialized) && millis() >= 5000;'
+          then:
+            - script.execute: initialize_display
+            - script.execute: refresh_display
+
+  # Regular updates without clearing the screen.
   - interval: 5s
     then:
       - script.execute: refresh_display
