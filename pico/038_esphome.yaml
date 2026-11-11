@@ -51,7 +51,7 @@ i2c_device:
 sensor:
   - platform: homeassistant
     id: full_price
-    entity_id: sensor.tibber_pulse_gunanga_electricity_price
+    entity_id: sensor.electricity_full_price
   - platform: homeassistant
     id: current_power
     entity_id: sensor.tibber_pulse_gunanga_power
