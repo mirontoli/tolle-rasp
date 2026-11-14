@@ -131,17 +131,19 @@ script:
 
             const uint8_t cursor[] = {0xFE, position};
             id(serlcd).write(cursor, sizeof(cursor));
+            delay(20);
             id(serlcd).write((const uint8_t *) text, strlen(text));
+            delay(20);
             id(previous_values)[index] = text;
           };
 
           // Row 1: full electricity price and current power.
-          update(0, 0x82, id(full_price).state, 5, 2);
+          update(0, 0x82, id(full_price).state, 6, 2);
           update(1, 0x8B, id(current_power).state, 4, 0);
 
           // Row 2: variable electricity costs.
           update(2, 0xC2, id(electricity_today).state, 6, 2);
-          update(3, 0xCB, id(electricity_month).state, 7, 2);
+          update(3, 0xCB, id(electricity_month).state, 4, 0);
 
           // Row 4: variable water costs. K is rounded to whole SEK.
           update(4, 0xD6, id(water_today).state, 6, 2);
@@ -162,3 +164,8 @@ interval:
   - interval: 5s
     then:
       - script.execute: refresh_display
+        
+  - interval: 30s
+    then:
+      - lambda: |-
+          ESP_LOGI("debug", "P from HA: %.2f", id(full_price).state);
